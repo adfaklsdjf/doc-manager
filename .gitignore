@@ -1,0 +1,77 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Virtual Environments
+bin/
+include/
+lib/
+lib64/
+share/
+pyvenv.cfg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project specific
+*.pdf
+*.jpg
+*.jpeg
+*.png
+*.tiff
+*.doc
+*.docx
+*.xls
+*.xlsx
+
+# Sensitive data
+config.ini
+.env
+secrets.yml
+credentials.json
+api_keys.txt
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Test outputs
+test_output/
+test_documents/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Archives
+*.zip
+*.tar
+*.gz
+*.7z
+*.rar
+
+# Don't ignore documentation PDFs if we create any
+!docs/*.pdf
+
+# Keep experiments folder but not test documents
+experiments/*_output/
+experiments/*_test/
