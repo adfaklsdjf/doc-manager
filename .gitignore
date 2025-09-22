@@ -39,6 +39,7 @@ pyvenv.cfg
 # Sensitive data
 config.ini
 .env
+.envrc
 secrets.yml
 credentials.json
 api_keys.txt
@@ -59,6 +60,7 @@ test_documents/
 # Temporary files
 tmp/
 temp/
+samples/
 *.tmp
 *.bak
 

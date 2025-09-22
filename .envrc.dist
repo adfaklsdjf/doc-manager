@@ -1,0 +1,4 @@
+export CONTEXT7_API_KEY='asdf'
+export ANTHROPIC_API_KEY='asdf'
+export OPENAI_API_KEY='asdf'
+export PAPERLESS_API_KEY='asdf'
