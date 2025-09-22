@@ -13,7 +13,7 @@ Managing physical mail and paper documents with ADHD creates overwhelming fricti
 ## Key Features (Planned)
 
 - ✅ **Zero-friction scanning** - Single button press to digitize
-- 📋 **Automatic categorization** - LLM-powered document understanding  
+- 📋 **Automatic categorization** - LLM-powered document understanding
 - 📋 **Smart naming** - Semantic filenames that make sense
 - 📋 **Organized storage** - Logical folder structure maintained automatically
 - 📋 **Full-text search** - Find anything instantly
@@ -66,6 +66,3 @@ This project is being developed iteratively using Claude Code as a development p
 
 Private project - not for distribution
 
-## Contact
-
-*[Private repository - contact information removed]*
