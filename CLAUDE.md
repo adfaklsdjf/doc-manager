@@ -1,75 +1,116 @@
-# Document Management System - Claude Code Context
+# CLAUDE.md
 
-## What This Is
-A living document management system designed to automatically process, categorize, and organize scanned documents. The primary goal is to eliminate the friction of dealing with physical mail and paperwork through intelligent automation.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-**Current Focus**: Getting documents scanned, characterized, and searchable.
+## Project Overview
+
+An intelligent document management system that automatically processes, categorizes, and organizes scanned documents using LLM-powered classification. The goal is to eliminate friction in dealing with physical mail and paperwork for someone with ADHD.
+
+**Current Phase**: Discovery & Validation (Phase 0)
 
 ## Repository Structure
+
 ```
 /
-├── CLAUDE.md                 # This file - essential context for Claude Code
-├── docs/                     # Project documentation
+├── docs/                     # Comprehensive project documentation
 │   ├── VISION.md            # Problem statement and long-term goals
-│   ├── ARCHITECTURE.md      # System design and components
-│   ├── ROADMAP.md           # Phases and milestones
-│   ├── REQUIREMENTS.md      # Functional and behavioral requirements
-│   ├── EXPERIMENTS.md       # Log of what we've tried and learned
-│   └── IMPLEMENTATION_PLAN.md # Current phase breakdown
-├── experiments/              # Throwaway proof-of-concept code
-├── src/                      # Production code (when ready)
-└── tests/                    # Test suite
+│   ├── ARCHITECTURE.md      # System design and data flow
+│   ├── ROADMAP.md           # Development phases and milestones
+│   ├── REQUIREMENTS.md      # Functional requirements
+│   ├── EXPERIMENTS.md       # Learning log and test results
+│   └── IMPLEMENTATION_PLAN.md # Current task breakdown
+├── experiments/              # Proof-of-concept code and prototypes
+├── src/                      # Production code (currently empty)
+├── tests/                    # Test suite (currently empty)
+└── Documents/               # Sample document directory for testing
+```
+
+## Architecture Overview
+
+**Document Flow**: ScanSnap ix1600 → Windows VM (OCR) → `/Documents/scanner/` → Python daemon → LLM classification → Organized storage + paperless-ngx
+
+**Key Components**:
+- **Intake Service**: Python daemon with file watcher
+- **Classification**: Anthropic Claude API for document understanding
+- **Storage**: File system organization + paperless-ngx for search
+- **Processing**: Queue-based pipeline with error handling
+
+## Development Commands
+
+This is a Python project without formal build tools yet. Common development patterns:
+
+```bash
+# Development setup (when ready)
+python -m venv venv
+source venv/bin/activate  # or `venv\Scripts\activate` on Windows
+pip install -r requirements.txt
+
+# Running experiments
+cd experiments
+python document_analysis.py
+python paperless_test.py
+python llm_classifier.py
+
+# Testing (when implemented)
+python -m pytest tests/
+python -m pytest tests/test_specific.py::TestClass::test_method
 ```
 
 ## Key Design Principles
-1. **Incremental by default** - Every feature should be addable without breaking existing ones
-2. **Log everything** - Enable replay, debugging, and iterative improvement  
-3. **Fail gracefully** - Better to defer/flag than miscategorize
-4. **Real files, real problems** - Test against actual documents, not hypotheticals
+
+1. **Incremental by default** - Build features that don't break existing ones
+2. **Log everything** - Enable debugging and iterative improvement
+3. **Fail gracefully** - Defer/flag rather than miscategorize
+4. **Real files, real problems** - Test against actual documents
 5. **Human in the loop** - Start manual, gradually automate
 
-## Current State
-- **Scanner**: Ricoh ScanSnap ix1600 → Windows VM → `/Documents/scanner/` folder
-- **OCR**: Handled by ScanSnap software (produces searchable PDFs)
-- **Storage**: ~1000 existing documents in `/Documents/` folder
-- **Processing**: Manual (not happening - this is the problem we're solving)
-
 ## Technology Stack
-- **Language**: Python (for ML ecosystem compatibility)
+
+- **Language**: Python 3.11+ (for ML ecosystem)
+- **LLM**: Anthropic Claude API
 - **Document Store**: paperless-ngx (running on Unraid)
-- **LLM Integration**: Anthropic API (initially)
-- **Infrastructure**: Unraid server (self-hosted)
+- **File Processing**: PyPDF2, pdf2image, pytesseract (planned)
+- **Infrastructure**: Docker containers on Unraid server
+- **Database**: SQLite (MVP) → PostgreSQL (production)
 
-## Working Guidelines for Claude Code
+## Current Focus Areas
 
-### When Experimenting
-- Start with standalone scripts in `experiments/`
-- Test against real files from the Documents folder
-- Log all attempts and outcomes to EXPERIMENTS.md
-- Don't worry about perfection - we're learning
+**Week 1 Tasks** (per docs/IMPLEMENTATION_PLAN.md):
+1. Document sample analysis - categorize existing 1000+ documents
+2. ScanSnap output validation - test OCR quality
+3. paperless-ngx API integration
+4. LLM classification prototype (target >70% accuracy)
 
-### When Building Features
-- Write small, focused functions
-- Include docstrings and type hints
-- Create tests alongside code
-- Update relevant documentation
+## Working with This Codebase
 
-### When You're Unsure
-- Ask for clarification rather than assuming
-- Propose alternatives with trade-offs
-- Reference existing patterns in the codebase
+### Experimentation Workflow
+- Create standalone scripts in `experiments/` directory
+- Test against real files from Documents folder (use carefully - contains actual documents)
+- Log all attempts and findings in `docs/EXPERIMENTS.md`
+- Don't optimize prematurely - focus on learning
 
-## Next Immediate Tasks
-1. Analyze sample documents to understand patterns
-2. Connect to paperless-ngx API
-3. Build initial document classifier prototype
-4. Test OCR extraction quality
+### Development Workflow
+- Write small, focused functions with docstrings and type hints
+- Create tests alongside production code in `src/`
+- Update relevant documentation files
+- Commit frequently with descriptive messages
 
-## Important Context Files
-- `etc-documents-20250921-1432.txt` - Full directory listing of Documents folder (20k+ tokens, use sparingly)
+### File Organization
+- `experiments/` - Throwaway proof-of-concept code
+- `src/` - Production-ready modules and services
+- `tests/` - Comprehensive test suite
+- Document processing results and learnings in `docs/EXPERIMENTS.md`
 
-## Owner Notes
-- User has ADHD - optimize for low-friction workflows
-- System must work incrementally - avoid big bang approaches
-- Logging is critical for iterative improvement
-- Start conservative, increase automation gradually
+## Important Notes
+
+- **Security**: All documents stay on local network, no cloud storage
+- **Performance**: LLM API rate limits will constrain processing speed
+- **Error Handling**: Better to defer than miscategorize - manual review queue essential
+- **Testing**: Use real documents but be mindful of private content in logs
+- **Target User**: ADHD-friendly workflows - minimize manual steps and decision fatigue
+
+## Context Files
+
+- `etc-documents-20250921-1432.txt` - Complete directory listing of Documents folder (~1000 files, 20k+ tokens - use sparingly)
+- All `.md` files in `docs/` contain essential project context
+- `principles.md` - Contains previous CLAUDE.md content (now superseded by this file)
