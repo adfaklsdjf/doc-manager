@@ -65,16 +65,19 @@
 ### Classification Engine
 **Purpose**: Understand document type and content
 - **Technology**: Anthropic Claude API (initially)
-- **Categories** (tentative):
-  - Utilities (gas, electric, water, internet)
-  - Financial (bank statements, credit cards)
-  - Insurance (health, auto, home)
-  - Medical (test results, bills, records)
-  - Government (taxes, notices, licenses)
-  - Receipts (purchases, services)
-  - Legal (contracts, agreements)
-  - Correspondence (letters, notices)
-  - Other (uncategorized)
+- **Categories** (based on analysis of 1000+ existing documents):
+  - Financial-Banking (statements, account docs) - 15%
+  - Financial-Investments (brokerage, 401k, crypto) - 10%
+  - Financial-Taxes (returns, W2s, 1099s) - 10%
+  - Utilities (electric, gas, water, telecom) - 20%
+  - Insurance (auto, health, home, life) - 8%
+  - Real-Estate (purchases, mortgages, property) - 10%
+  - Employment (organized by employer) - 8%
+  - Health-Medical (therapy, records, prescriptions) - 5%
+  - Receipts-Purchases (retail, manuals, warranties) - 12%
+  - Legal-Government (court docs, licenses, forms) - 5%
+  - Personal-Projects (code, technical docs) - 4%
+  - Archive-Legacy (unclear/needs review) - 3%
 
 ### Information Extractor
 **Purpose**: Pull structured data from documents

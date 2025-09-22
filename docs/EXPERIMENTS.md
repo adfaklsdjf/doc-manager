@@ -44,67 +44,116 @@ What we'll do differently based on this
 
 ## Planned Experiments
 
-### Experiment #1: Document Pattern Analysis
+### Experiment #1: Entity Recognition Validation
 **Date**: TBD  
 **Owner**: Claude Code  
 **Status**: Planned
 
 **Goal**:
-Understand the types and patterns of documents in the existing archive to inform categorization rules.
+Test extraction of the top 10 entities from filenames and validate recognition accuracy.
 
 **Approach**:
-- Parse `etc-documents-20250921-1432.txt`
-- Group files by apparent type
-- Extract date patterns
-- Identify naming conventions
+- Create regex patterns for: AEP, Columbia Gas, Wells Fargo, 1and1, Pantheon, Vanguard, OSU, Anthem, Progressive, E-Trade
+- Test on 100 sample filenames
+- Measure precision and recall
+- Handle variations (e.g., "AEP" vs "AEPBill" vs "AEP Ohio")
+
+**Test Cases**:
+- `AEPBill_2022-11-11.pdf` → AEP
+- `Columbia Gas - 2022-11.pdf` → Columbia Gas
+- `Wells Fargo - 2021-01-03.pdf` → Wells Fargo
+- `IN_202010120361.pdf` (1and1 invoice) → 1and1
 
 ---
 
-### Experiment #2: OCR Quality Assessment
-**Date**: TBD  
-**Owner**: User  
-**Status**: Planned
-
-**Goal**:
-Validate that ScanSnap OCR quality is sufficient for LLM processing.
-
-**Approach**:
-- Scan 5 different document types
-- Extract text from PDFs
-- Test readability with LLM
-- Check for common OCR errors
-
----
-
-### Experiment #3: paperless-ngx API Test
+### Experiment #2: Date Pattern Extraction
 **Date**: TBD  
 **Owner**: Claude Code  
 **Status**: Planned
 
 **Goal**:
-Verify we can programmatically interact with paperless-ngx for document storage and retrieval.
+Extract and normalize dates from various filename patterns to YYYY-MM-DD format.
 
 **Approach**:
-- Connect to API
-- Upload test document
-- Apply tags
-- Search and retrieve
+- Implement parsers for each pattern identified:
+  - YYYY-MM-DD (keep as-is)
+  - YYYYMMDD (add hyphens)
+  - MM-DD-YYYY (reorder)
+  - Month YYYY (parse month name)
+- Test on real filenames from each pattern type
+- Handle edge cases (invalid dates, ambiguous formats)
+
+**Test Cases**:
+- `03012025_DERIVATIVES AND INTEGRALS.pdf` → 2025-03-01
+- `Columbia Gas 2020-04-22.pdf` → 2020-04-22
+- `Wells Fargo - 2019-02-01.pdf` → 2019-02-01
+- `statement-Apr-2022.pdf` → 2022-04-01
 
 ---
 
-### Experiment #4: LLM Classification Accuracy
+### Experiment #3: Scanner Output Classification
+**Date**: TBD  
+**Owner**: User + Claude Code  
+**Status**: Planned
+
+**Goal**:
+Test LLM classification on actual ScanSnap outputs with problematic names.
+
+**Approach**:
+- User scans 5 documents with typical scanner names
+- Extract text via OCR
+- Send to LLM for classification
+- Compare to known document type
+- Iterate on prompt engineering
+
+**Test Documents**:
+1. Recent utility bill (should → Utilities)
+2. Bank statement (should → Financial-Banking)
+3. Medical EOB (should → Health-Medical)
+4. Store receipt (should → Receipts-Purchases)
+5. Tax form (should → Financial-Taxes)
+
+---
+
+### Experiment #4: Folder Structure Mapping
 **Date**: TBD  
 **Owner**: Claude Code  
 **Status**: Planned
 
 **Goal**:
-Determine if LLM can accurately categorize documents and extract key information.
+Map existing folder structure to new categorization system.
 
 **Approach**:
-- Create prompt template
-- Test on 20 diverse documents
-- Measure accuracy
-- Iterate on prompt
+- Parse existing paths from document list
+- Map current folders to new categories
+- Identify conflicts and ambiguities
+- Create migration rules
+
+**Key Mappings**:
+- `/Account Statements/AEP/` → Utilities
+- `/Account Statements/Wells Fargo/` → Financial-Banking
+- `/tax docus/` → Financial-Taxes
+- `/work/Pantheon/` → Employment-Pantheon
+- `/etc/` → Archive-Legacy (needs review)
+
+---
+
+### Experiment #5: High-Priority Document Detection
+**Date**: TBD  
+**Owner**: Claude Code  
+**Status**: Planned
+
+**Goal**:
+Identify documents requiring immediate action based on content.
+
+**Approach**:
+- Define priority indicators:
+  - "PAST DUE", "FINAL NOTICE"
+  - "Response Required By"
+  - "Tax Deadline"
+  - Recent dates with "Bill" or "Invoice"
+- Test on sample of recent documents
+- Measure false positive/negative rates
 
 ---
 
