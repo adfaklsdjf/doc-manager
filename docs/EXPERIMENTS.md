@@ -110,7 +110,50 @@ Determine if LLM can accurately categorize documents and extract key information
 
 ## Completed Experiments
 
-*None yet - this section will grow as we conduct experiments*
+### Experiment #1: Paperless-NGX Initial Setup and API Connectivity
+**Date**: 2025-09-22
+**Owner**: Claude Code
+**Status**: Complete
+
+**Goal**:
+Establish working connection to paperless-ngx instance and verify API functionality for future document processing.
+
+**Approach**:
+- Test MCP server connection to paperless-ngx
+- Verify direct API access via curl
+- Explore folder structure and existing documents
+- Research OCR configuration options, particularly Tesseract neural networks
+
+**Results**:
+```
+✅ MCP server connection: Working at 192.168.1.7:8000
+✅ Direct API connection: Working with format "Authorization: Token ${PAPERLESS_API_KEY}"
+✅ Fresh instance confirmed: 0 documents, tags, correspondents, document types
+✅ Folder structure ready: /Volumes/etc/Documents/paperless/ with consume/ and media/ folders
+✅ Source material available: ~1000 existing documents in parent Documents folder
+```
+
+**Learnings**:
+- Initial IP address confusion (192.168.0.7 vs 192.168.1.7) required full client restart
+- Curl token format is critical: `${PAPERLESS_API_KEY}` not `$PAPERLESS_API_KEY`
+- MCP server provides cleaner interface than direct API calls for most operations
+- Fresh paperless-ngx instances have no default configuration
+
+**Decision**:
+- Use MCP server for document management operations
+- Reserve direct API calls for configuration that MCP doesn't support
+- Proceed with OCR configuration research completed
+
+**OCR Configuration Research Summary**:
+Key environment variables for Tesseract neural networks:
+- `PAPERLESS_OCR_LANGUAGE`: Language selection (default: "eng", supports "deu+eng" combinations)
+- `PAPERLESS_OCR_MODE`: When to OCR ("skip", "redo", "force")
+- `PAPERLESS_OCR_CLEAN`: Use unpaper preprocessing ("clean", "clean-final", "none")
+- `PAPERLESS_OCR_LANGUAGES`: Install additional language packs
+- `PAPERLESS_OCR_USER_ARGS`: Advanced OCRmyPDF arguments in JSON format
+
+**Files**:
+- Environment configured via `.envrc` and `.mcp.json`
 
 ---
 
