@@ -15,7 +15,8 @@ A living document management system designed to automatically process, categoriz
 │   ├── ROADMAP.md           # Phases and milestones
 │   ├── REQUIREMENTS.md      # Functional and behavioral requirements
 │   ├── EXPERIMENTS.md       # Log of what we've tried and learned
-│   └── IMPLEMENTATION_PLAN.md # Current phase breakdown
+│   ├── IMPLEMENTATION_PLAN.md # Current phase breakdown
+│   └── CATEGORIZATION_RULES.md # Document classification rules from analysis
 ├── experiments/              # Throwaway proof-of-concept code
 ├── src/                      # Production code (when ready)
 └── tests/                    # Test suite
