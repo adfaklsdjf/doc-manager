@@ -30,15 +30,14 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-@app.route('/webhook', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
-def webhook_handler():
-    """Handle all webhook requests and log details."""
-
+def handle_webhook_request(endpoint_name):
+    """Common webhook handler for all endpoints."""
     # Get current timestamp
     timestamp = datetime.now().isoformat()
 
     # Collect request details
     request_details = {
+        'endpoint': endpoint_name,
         'timestamp': timestamp,
         'method': request.method,
         'url': request.url,
@@ -53,7 +52,8 @@ def webhook_handler():
 
     # Save raw request to file for later analysis
     # Use .http extension for HTTP requests (better than .txt for binary content)
-    request_filename = f"request_{timestamp.replace(':', '-').replace('.', '_')}.http"
+    clean_timestamp = timestamp.replace(':', '-').replace('.', '_')
+    request_filename = f"{endpoint_name}_{clean_timestamp}.http"
     request_file_path = os.path.join(saved_requests_dir, request_filename)
 
     # Get raw request body
@@ -111,7 +111,7 @@ def webhook_handler():
         request_details['body_error'] = str(e)
 
     # Log the request with headers prominently displayed
-    logger.info(f"=== WEBHOOK RECEIVED ===")
+    logger.info(f"=== {endpoint_name.upper()} WEBHOOK RECEIVED ===")
     logger.info(f"Method: {request.method} | Path: {request.path} | From: {request.remote_addr}")
     logger.info(f"Headers: {json.dumps(dict(request.headers), indent=2)}")
     logger.info(f"Full Request Details: {json.dumps(request_details, indent=2)}")
@@ -120,11 +120,37 @@ def webhook_handler():
     # Return success response
     response_data = {
         'status': 'received',
+        'endpoint': endpoint_name,
         'timestamp': timestamp,
-        'message': 'Webhook processed successfully'
+        'message': f'{endpoint_name} webhook processed successfully'
     }
 
     return jsonify(response_data), 200
+
+@app.route('/webhook', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def webhook_handler():
+    """Handle general webhook requests (backward compatibility)."""
+    return handle_webhook_request('general')
+
+@app.route('/consumption-started', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def consumption_started_handler():
+    """Handle Consumption Started trigger webhooks."""
+    return handle_webhook_request('consumption-started')
+
+@app.route('/document-added', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def document_added_handler():
+    """Handle Document Added trigger webhooks."""
+    return handle_webhook_request('document-added')
+
+@app.route('/document-updated', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def document_updated_handler():
+    """Handle Document Updated trigger webhooks."""
+    return handle_webhook_request('document-updated')
+
+@app.route('/scheduled', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def scheduled_handler():
+    """Handle Scheduled trigger webhooks."""
+    return handle_webhook_request('scheduled')
 
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -138,10 +164,20 @@ def root():
         'service': 'paperless-webhook-receiver',
         'status': 'running',
         'endpoints': {
-            '/webhook': 'Main webhook endpoint (accepts all HTTP methods)',
+            '/webhook': 'General webhook endpoint (backward compatibility)',
+            '/consumption-started': 'Paperless "Consumption Started" trigger webhooks',
+            '/document-added': 'Paperless "Document Added" trigger webhooks',
+            '/document-updated': 'Paperless "Document Updated" trigger webhooks',
+            '/scheduled': 'Paperless "Scheduled" trigger webhooks',
             '/health': 'Health check',
             '/': 'This info page'
         },
+        'paperless_workflow_triggers': [
+            'Consumption Started',
+            'Document Added',
+            'Document Updated',
+            'Scheduled'
+        ],
         'timestamp': datetime.now().isoformat()
     }), 200
 
