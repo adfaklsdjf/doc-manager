@@ -13,8 +13,8 @@ This document tracks all experiments, prototypes, and learnings during developme
 ## Experiment Template
 
 ### Experiment #N: [Name]
-**Date**: YYYY-MM-DD  
-**Owner**: [User/Claude Code]  
+**Date**: YYYY-MM-DD
+**Owner**: [User/Claude Code]
 **Status**: [Planned/In Progress/Complete]
 
 **Goal**:
@@ -42,11 +42,23 @@ What we'll do differently based on this
 
 ---
 
-## Planned Experiments
+## Future Experiments
 
-### Experiment #1: Document Pattern Analysis
-**Date**: TBD  
-**Owner**: Claude Code  
+### services setup
+
+- investigate how to create and manage new services on unraid
+- stand up a web api service for receiving webhook callbacks from paperless
+
+
+### paperless webhook callback testing
+
+- create new endpoints for each type of webhook paperless can call
+  - endpoints do nothing except gather information about what is received
+- document exactly what is received by each type of callback
+
+### Document Pattern Analysis
+**Date**: TBD
+**Owner**: Claude Code
 **Status**: Planned
 
 **Goal**:
@@ -60,9 +72,9 @@ Understand the types and patterns of documents in the existing archive to inform
 
 ---
 
-### Experiment #2: OCR Quality Assessment
-**Date**: TBD  
-**Owner**: User  
+### OCR Quality Assessment
+**Date**: TBD
+**Owner**: User
 **Status**: Planned
 
 **Goal**:
@@ -76,9 +88,9 @@ Validate that ScanSnap OCR quality is sufficient for LLM processing.
 
 ---
 
-### Experiment #3: paperless-ngx API Test
-**Date**: TBD  
-**Owner**: Claude Code  
+### paperless-ngx API Test
+**Date**: TBD
+**Owner**: Claude Code
 **Status**: Planned
 
 **Goal**:
@@ -92,9 +104,9 @@ Verify we can programmatically interact with paperless-ngx for document storage 
 
 ---
 
-### Experiment #4: LLM Classification Accuracy
-**Date**: TBD  
-**Owner**: Claude Code  
+### LLM Classification Accuracy
+**Date**: TBD
+**Owner**: Claude Code
 **Status**: Planned
 
 **Goal**:
@@ -110,7 +122,7 @@ Determine if LLM can accurately categorize documents and extract key information
 
 ## Completed Experiments
 
-### Experiment #1: Paperless-NGX Initial Setup and API Connectivity
+### Paperless-NGX Initial Setup and API Connectivity
 **Date**: 2025-09-22
 **Owner**: Claude Code
 **Status**: Complete
