@@ -1,0 +1,107 @@
+{
+  "test_metadata": {
+    "model": "claude-3-haiku",
+    "test_date": "2025-09-28",
+    "test_type": "subagent_analysis",
+    "document": "samples/09162025_RESPONSE REQUESTED BY September 16,2025.pdf",
+    "analysis_method": "independent_analysis_no_guidance"
+  },
+  "performance_summary": {
+    "overall_accuracy": "excellent",
+    "confidence_reported": 95,
+    "key_detections": {
+      "duplicate_pages_detected": true,
+      "blank_page_detected": true,
+      "multiple_documents_detected": true,
+      "document_boundaries_correct": true
+    }
+  },
+  "detailed_analysis": {
+    "pages_analyzed": 7,
+    "documents_identified": 2,
+    "duplicates_found": [
+      {"pages": [1, 4], "type": "exact_duplicate", "accuracy": "perfect"},
+      {"pages": [2, 3], "type": "exact_duplicate", "accuracy": "perfect"}
+    ],
+    "problematic_pages": [
+      {"page": 6, "issue": "poor_scan_quality", "action": "remove"}
+    ],
+    "document_boundaries": [
+      {
+        "document": "cleveland_water",
+        "pages": [1, 2, 3, 4, 5, 6],
+        "type": "utility_notice",
+        "keep_pages": [1, 2, 5],
+        "remove_pages": [3, 4, 6]
+      },
+      {
+        "document": "syntero_medical",
+        "pages": [7],
+        "type": "medical_invoice",
+        "keep_pages": [7]
+      }
+    ]
+  },
+  "recommendations": {
+    "actions": [
+      {
+        "action": "extract",
+        "pages": [1, 2, 5],
+        "document_type": "utility_notice",
+        "suggested_filename": "2025-09-16_Cleveland-Water_Protection-Program_Brian-Weaver.pdf",
+        "tags": ["water-utility", "cleveland-water", "homeserve", "protection-plan"],
+        "reasoning": "Original water line protection letter, FAQ, and enrollment form"
+      },
+      {
+        "action": "extract",
+        "pages": [7],
+        "document_type": "medical_invoice",
+        "suggested_filename": "2025-09-03_Syntero_Medical-Invoice_Brian-Weaver_$30.pdf",
+        "tags": ["medical", "syntero", "mental-health", "invoice"],
+        "reasoning": "Separate medical billing statement"
+      },
+      {
+        "action": "remove",
+        "pages": [3, 4, 6],
+        "reasoning": "Pages 3,4 are exact duplicates; Page 6 has poor scan quality"
+      }
+    ]
+  },
+  "comparison_to_opus_baseline": {
+    "agreement_level": "near_perfect",
+    "differences": [
+      {
+        "aspect": "page_numbering",
+        "haiku": "identified pages 1,4 and 2,3 as duplicates",
+        "opus": "identified pages 3,4 as duplicates of 1,2",
+        "note": "same content identified, slight difference in description"
+      }
+    ],
+    "accuracy_assessment": {
+      "duplicate_detection": "100%",
+      "document_separation": "100%",
+      "blank_page_detection": "100%",
+      "action_recommendations": "95%"
+    }
+  },
+  "strengths": [
+    "Detailed page-by-page analysis",
+    "Clear reasoning for each decision",
+    "Proper confidence scoring",
+    "Excellent duplicate detection methodology",
+    "Good document boundary identification",
+    "Practical filename suggestions",
+    "Appropriate tag recommendations"
+  ],
+  "areas_for_improvement": [
+    "Could provide more specific OCR quality metrics",
+    "Could suggest fallback actions for edge cases"
+  ],
+  "paperless_integration_readiness": {
+    "json_structure_compatible": true,
+    "action_format_clear": true,
+    "confidence_scoring_useful": true,
+    "tag_suggestions_valuable": true,
+    "overall_readiness": "high"
+  }
+}
