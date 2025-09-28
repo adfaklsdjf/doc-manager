@@ -66,7 +66,7 @@ class DocumentAnalyzer:
 
         return pages
 
-    def analyze_with_text_extraction(self, pdf_path: str, model: str = "claude-3-haiku-20240307") -> Dict:
+    def analyze_with_text_extraction(self, pdf_path: str, model: str = "claude-3-5-haiku-latest") -> Dict:
         """Analyze PDF by first extracting text, then sending to LLM."""
         start_time = time.time()
 
@@ -114,7 +114,7 @@ class DocumentAnalyzer:
                 "processing_time": time.time() - start_time
             }
 
-    def analyze_with_direct_pdf(self, pdf_path: str, model: str = "claude-3-haiku-20240307") -> Dict:
+    def analyze_with_direct_pdf(self, pdf_path: str, model: str = "claude-3-5-haiku-latest") -> Dict:
         """Attempt to analyze PDF by sending file directly to LLM."""
         start_time = time.time()
 
@@ -160,7 +160,7 @@ class DocumentAnalyzer:
                 "processing_time": time.time() - start_time
             }
 
-    def analyze_page_by_page(self, pdf_path: str, model: str = "claude-3-haiku-20240307") -> Dict:
+    def analyze_page_by_page(self, pdf_path: str, model: str = "claude-3-5-haiku-latest") -> Dict:
         """Analyze each page separately, then aggregate results."""
         start_time = time.time()
 
@@ -241,7 +241,7 @@ def main():
 
     # Test models (start with Haiku, optionally test Sonnet)
     models_to_test = [
-        "claude-3-haiku-20240307",
+        "claude-3-5-haiku-latest",
         # "claude-3-5-sonnet-20241022"  # Uncomment to test Sonnet
     ]
 

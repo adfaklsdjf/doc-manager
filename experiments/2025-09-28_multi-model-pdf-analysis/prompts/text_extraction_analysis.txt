@@ -5,32 +5,44 @@ Your task is to:
 2. Detect duplicate pages or content
 3. Find blank, illegible, or artifact pages
 4. Recommend specific actions (keep/remove/split pages)
-5. Suggest appropriate filenames for extracted documents
-6. Provide confidence level (0-100%)
+5. Determine if any pages need to be reordered
+6. Assess document importance and urgency
+7. Summarize key takeaways from the content
+8. Determine if action is required from the recipient
+9. Suggest appropriate filenames for extracted documents
+10. Provide confidence level (0-100%)
 
 Format your response as structured JSON with the following schema:
-{
+{{
   "analysis_confidence": <number>,
   "document_count": <number>,
   "total_pages": <number>,
+  "document_importance": "low|medium|high|critical",
+  "action_required": true/false,
+  "key_summary": "brief summary of document contents and purpose",
   "recommended_actions": [
-    {
-      "action": "extract|remove|keep",
+    {{
+      "action": "extract|remove|keep|reorder",
       "pages": [list of page numbers],
       "document_type": "description",
       "suggested_filename": "filename.pdf",
       "tags": ["tag1", "tag2"],
       "reasoning": "explanation"
-    }
+    }}
   ],
   "duplicates_detected": [
-    {
+    {{
       "pages": [page numbers],
       "similarity": "exact|high|partial",
       "reasoning": "explanation"
-    }
-  ]
-}
+    }}
+  ],
+  "reordering_needed": {{
+    "required": true/false,
+    "suggested_order": [page numbers in correct order],
+    "reasoning": "explanation if reordering needed"
+  }}
+}}
 
 PDF Text Content:
 {text_content}

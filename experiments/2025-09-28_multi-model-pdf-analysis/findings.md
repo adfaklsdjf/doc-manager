@@ -138,12 +138,20 @@ pypdf.PdfReader.extract_text() → Empty string for all 7 pages
 ## Files Created
 - `intelligent_pdf_processing_plan.md` - Original experiment plan
 - `haiku_analysis_results.json` - Subagent test results (excellent)
-- `llm_document_analyzer.py` - API testing script (needs fixes)
+- `llm_document_analyzer.py` - API testing script (refactored)
+- `prompts/` - Separated prompt templates directory
+  - `text_extraction_analysis.txt` - Enhanced main analysis prompt
+  - `direct_pdf_analysis.txt` - Direct PDF analysis prompt
+  - `page_analysis.txt` - Individual page analysis prompt
+  - `aggregate_analysis.txt` - Page aggregation prompt
 - `api_test_results.json` - Partial API test results
 - `debug_pdf_extraction.py` - PyPDF2 debugging script
 - `debug_pypdf_extraction.py` - pypdf debugging script
 - `compare_westfield_extraction.py` - WESTFIELD PDF comparison script
 - `test_anthropic_basic.py` - Basic API connectivity test
+- `test_enhanced_analysis.py` - Enhanced analysis test script
+- `clean_enhanced_results.py` - Clean results extraction script
+- `enhanced_analysis_clean.json` - Enhanced analysis results
 - `findings.md` - This document
 
 ## Updated Conclusions
@@ -163,5 +171,41 @@ pypdf.PdfReader.extract_text() → Empty string for all 7 pages
 - **Text layer detection**: Essential first step in processing pipeline
 - **Quality optimization**: Consider OCR reprocessing even for text-layer PDFs
 
+### 6. Enhanced Analysis with Claude 3.5 Haiku ✅ EXCELLENT
+**Method**: Updated prompts with new analysis criteria, latest Haiku model, ABBYY OCR text
+**Result**: **95% confidence** with comprehensive document intelligence
+
+**New Analysis Features Tested**:
+- ✅ **Document importance assessment**: "HIGH" correctly identified
+- ✅ **Action required detection**: "YES" - correctly identified urgent policy changes
+- ✅ **Key summary generation**: Accurate, concise summary of policy changes
+- ✅ **Reordering assessment**: "NO" - correctly identified proper page order
+- ✅ **Enhanced action recommendations**: Proper "KEEP" action with detailed reasoning
+
+**Specific Results for WESTFIELD Insurance Document**:
+```json
+{
+  "analysis_confidence": 95,
+  "document_count": 1,
+  "total_pages": 2,
+  "document_importance": "high",
+  "action_required": true,
+  "key_summary": "Westfield insurance policy update notice for homeowner Brian C Weaver, detailing changes to home insurance policy effective 12/28/2024, including deductible increases, roof coverage modifications, and policy exclusions"
+}
+```
+
+**Additional Insights Provided**:
+- Identified specific policy changes (roof coverage, deductibles)
+- Recognized urgency with 12/28/2024 deadline
+- Recommended customer contact with agent
+- Proper tagging: "insurance", "policy update", "homeowners"
+- Appropriate filename suggestion: "Westfield_Policy_Update_2024.pdf"
+
+**Technical Notes**:
+- **Model**: claude-3-5-haiku-latest (upgraded from claude-3-haiku-20240307)
+- **Processing time**: 7.24 seconds
+- **Response quality**: Structured JSON + additional observations
+- **Text extraction**: ABBYY OCR provided clean, accurate text input
+
 ### 🎯 **Ready for Phase 2**
-Clear path forward established with robust understanding of PDF content variations and API capabilities.
+Enhanced analysis capabilities demonstrated excellent document intelligence. Clear path forward established with robust understanding of PDF content variations, API capabilities, and practical business document processing needs.
