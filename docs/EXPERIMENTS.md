@@ -8,6 +8,24 @@ This document tracks all experiments, prototypes, and learnings during developme
 - **Learnings**: What we learned
 - **Decision**: What we'll do based on this
 
+## Experiment Organization
+Each experiment should be organized in its own dated subdirectory under `experiments/`:
+```
+experiments/
+├── YYYY-MM-DD_brief-description/
+│   ├── plan.md                    # Experiment plan and objectives
+│   ├── results.json              # Raw data and measurements
+│   ├── analysis.md               # Findings and conclusions
+│   ├── scripts/                  # Code written for this experiment
+│   └── artifacts/                # Generated files, logs, etc.
+└── .gitkeep
+```
+
+**Naming Convention**: `YYYY-MM-DD_brief-description`
+- Use ISO date format (2025-09-28)
+- Brief description should be 2-4 words, hyphen-separated
+- Examples: `2025-09-28_multi-model-pdf-analysis`, `2025-09-30_ocr-quality-assessment`
+
 ---
 
 ## Experiment Template
@@ -38,7 +56,7 @@ Concrete data/output
 What we'll do differently based on this
 
 **Files**:
-- `experiments/relevant_script.py`
+- `experiments/YYYY-MM-DD_experiment-name/`
 
 ---
 
@@ -166,6 +184,7 @@ Key environment variables for Tesseract neural networks:
 
 **Files**:
 - Environment configured via `.envrc` and `.mcp.json`
+- No specific experiment directory (predates organized structure)
 
 ---
 

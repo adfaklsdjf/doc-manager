@@ -43,7 +43,9 @@ A living document management system designed to automatically process, categoriz
 ## Working Guidelines for Claude Code
 
 ### When Experimenting
-- Start with standalone scripts in `experiments/`
+- **Read `docs/EXPERIMENTS.md` first** to understand existing experiments and organization
+- Create dated subdirectories: `experiments/YYYY-MM-DD_brief-description/`
+- Start with standalone scripts in the experiment subdirectory
 - Test against real files from the Documents folder
 - Log all attempts and outcomes to EXPERIMENTS.md
 - Don't worry about perfection - we're learning
