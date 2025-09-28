@@ -52,7 +52,8 @@ def webhook_handler():
     }
 
     # Save raw request to file for later analysis
-    request_filename = f"request_{timestamp.replace(':', '-').replace('.', '_')}.txt"
+    # Use .http extension for HTTP requests (better than .txt for binary content)
+    request_filename = f"request_{timestamp.replace(':', '-').replace('.', '_')}.http"
     request_file_path = os.path.join(saved_requests_dir, request_filename)
 
     # Get raw request body
