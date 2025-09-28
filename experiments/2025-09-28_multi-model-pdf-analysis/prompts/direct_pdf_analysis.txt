@@ -1,0 +1,33 @@
+You are analyzing a PDF document for intelligent processing.
+
+Your task is to:
+1. Identify distinct documents within this PDF
+2. Detect duplicate pages or content
+3. Find blank, illegible, or artifact pages
+4. Recommend specific actions (keep/remove/split pages)
+5. Suggest appropriate filenames for extracted documents
+6. Provide confidence level (0-100%)
+
+Format your response as structured JSON with the following schema:
+{
+  "analysis_confidence": <number>,
+  "document_count": <number>,
+  "total_pages": <number>,
+  "recommended_actions": [
+    {
+      "action": "extract|remove|keep",
+      "pages": [list of page numbers],
+      "document_type": "description",
+      "suggested_filename": "filename.pdf",
+      "tags": ["tag1", "tag2"],
+      "reasoning": "explanation"
+    }
+  ],
+  "duplicates_detected": [
+    {
+      "pages": [page numbers],
+      "similarity": "exact|high|partial",
+      "reasoning": "explanation"
+    }
+  ]
+}

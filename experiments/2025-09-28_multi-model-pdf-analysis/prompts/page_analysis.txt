@@ -1,0 +1,22 @@
+Analyze this single page from a PDF document.
+
+Page {page_number} content:
+{page_text}
+
+Determine:
+1. What type of document/content is this?
+2. Is this a complete document or part of a multi-page document?
+3. Does this appear to be a duplicate of something?
+4. Is this page blank, illegible, or artifact?
+5. What company/organization is this from?
+
+Respond with a brief JSON analysis:
+{
+  "page_number": {page_number},
+  "document_type": "description",
+  "is_complete_document": true/false,
+  "likely_duplicate": true/false,
+  "quality": "good|poor|blank",
+  "organization": "company name",
+  "key_content": "brief summary"
+}

@@ -35,6 +35,15 @@ class DocumentAnalyzer:
             raise ValueError("ANTHROPIC_API_KEY environment variable not set")
 
         self.client = Anthropic(api_key=self.api_key)
+        self.prompt_dir = Path(__file__).parent / "prompts"
+
+    def load_prompt(self, prompt_name: str) -> str:
+        """Load a prompt template from the prompts directory."""
+        prompt_file = self.prompt_dir / f"{prompt_name}.txt"
+        if not prompt_file.exists():
+            raise FileNotFoundError(f"Prompt file not found: {prompt_file}")
+
+        return prompt_file.read_text().strip()
 
     def extract_text_from_pdf(self, pdf_path: str) -> List[Dict[str, str]]:
         """Extract text from PDF using PyPDF2."""
@@ -72,42 +81,8 @@ class DocumentAnalyzer:
             for page in pages
         ])
 
-        prompt = f"""You are analyzing a PDF document for intelligent processing. Below is the text content extracted from each page of the document.
-
-Your task is to:
-1. Identify distinct documents within this PDF
-2. Detect duplicate pages or content
-3. Find blank, illegible, or artifact pages
-4. Recommend specific actions (keep/remove/split pages)
-5. Suggest appropriate filenames for extracted documents
-6. Provide confidence level (0-100%)
-
-Format your response as structured JSON with the following schema:
-{{
-  "analysis_confidence": <number>,
-  "document_count": <number>,
-  "total_pages": <number>,
-  "recommended_actions": [
-    {{
-      "action": "extract|remove|keep",
-      "pages": [list of page numbers],
-      "document_type": "description",
-      "suggested_filename": "filename.pdf",
-      "tags": ["tag1", "tag2"],
-      "reasoning": "explanation"
-    }}
-  ],
-  "duplicates_detected": [
-    {{
-      "pages": [page numbers],
-      "similarity": "exact|high|partial",
-      "reasoning": "explanation"
-    }}
-  ]
-}}
-
-PDF Text Content:
-{text_content}"""
+        prompt_template = self.load_prompt("text_extraction_analysis")
+        prompt = prompt_template.format(text_content=text_content)
 
         try:
             response = self.client.messages.create(
@@ -125,7 +100,10 @@ PDF Text Content:
                 "processing_time": processing_time,
                 "input_tokens": len(prompt.split()),
                 "response": response.content[0].text,
-                "usage": response.usage._asdict() if hasattr(response, 'usage') else None
+                "usage": {
+                    "input_tokens": response.usage.input_tokens if hasattr(response, 'usage') else None,
+                    "output_tokens": response.usage.output_tokens if hasattr(response, 'usage') else None
+                } if hasattr(response, 'usage') else None
             }
 
         except Exception as e:
@@ -140,39 +118,7 @@ PDF Text Content:
         """Attempt to analyze PDF by sending file directly to LLM."""
         start_time = time.time()
 
-        prompt = """You are analyzing a PDF document for intelligent processing.
-
-Your task is to:
-1. Identify distinct documents within this PDF
-2. Detect duplicate pages or content
-3. Find blank, illegible, or artifact pages
-4. Recommend specific actions (keep/remove/split pages)
-5. Suggest appropriate filenames for extracted documents
-6. Provide confidence level (0-100%)
-
-Format your response as structured JSON with the following schema:
-{
-  "analysis_confidence": <number>,
-  "document_count": <number>,
-  "total_pages": <number>,
-  "recommended_actions": [
-    {
-      "action": "extract|remove|keep",
-      "pages": [list of page numbers],
-      "document_type": "description",
-      "suggested_filename": "filename.pdf",
-      "tags": ["tag1", "tag2"],
-      "reasoning": "explanation"
-    }
-  ],
-  "duplicates_detected": [
-    {
-      "pages": [page numbers],
-      "similarity": "exact|high|partial",
-      "reasoning": "explanation"
-    }
-  ]
-}"""
+        prompt = self.load_prompt("direct_pdf_analysis")
 
         try:
             # Read PDF file
@@ -200,7 +146,10 @@ Format your response as structured JSON with the following schema:
                 "model": model,
                 "processing_time": processing_time,
                 "response": response.content[0].text,
-                "usage": response.usage._asdict() if hasattr(response, 'usage') else None
+                "usage": {
+                    "input_tokens": response.usage.input_tokens if hasattr(response, 'usage') else None,
+                    "output_tokens": response.usage.output_tokens if hasattr(response, 'usage') else None
+                } if hasattr(response, 'usage') else None
             }
 
         except Exception as e:
@@ -222,28 +171,11 @@ Format your response as structured JSON with the following schema:
         page_analyses = []
 
         for page in pages:
-            page_prompt = f"""Analyze this single page from a PDF document.
-
-Page {page['page_number']} content:
-{page['text']}
-
-Determine:
-1. What type of document/content is this?
-2. Is this a complete document or part of a multi-page document?
-3. Does this appear to be a duplicate of something?
-4. Is this page blank, illegible, or artifact?
-5. What company/organization is this from?
-
-Respond with a brief JSON analysis:
-{{
-  "page_number": {page['page_number']},
-  "document_type": "description",
-  "is_complete_document": true/false,
-  "likely_duplicate": true/false,
-  "quality": "good|poor|blank",
-  "organization": "company name",
-  "key_content": "brief summary"
-}}"""
+            page_prompt_template = self.load_prompt("page_analysis")
+            page_prompt = page_prompt_template.format(
+                page_number=page['page_number'],
+                page_text=page['text']
+            )
 
             try:
                 response = self.client.messages.create(
@@ -265,34 +197,11 @@ Respond with a brief JSON analysis:
                 })
 
         # Now aggregate the results
-        aggregate_prompt = f"""Based on the individual page analyses below, provide an overall document processing recommendation.
-
-Page analyses:
-{json.dumps(page_analyses, indent=2)}
-
-Provide a comprehensive analysis in this JSON format:
-{{
-  "analysis_confidence": <number>,
-  "document_count": <number>,
-  "total_pages": {len(pages)},
-  "recommended_actions": [
-    {{
-      "action": "extract|remove|keep",
-      "pages": [list of page numbers],
-      "document_type": "description",
-      "suggested_filename": "filename.pdf",
-      "tags": ["tag1", "tag2"],
-      "reasoning": "explanation"
-    }}
-  ],
-  "duplicates_detected": [
-    {{
-      "pages": [page numbers],
-      "similarity": "exact|high|partial",
-      "reasoning": "explanation"
-    }}
-  ]
-}}"""
+        aggregate_prompt_template = self.load_prompt("aggregate_analysis")
+        aggregate_prompt = aggregate_prompt_template.format(
+            page_analyses=json.dumps(page_analyses, indent=2),
+            total_pages=len(pages)
+        )
 
         try:
             final_response = self.client.messages.create(
