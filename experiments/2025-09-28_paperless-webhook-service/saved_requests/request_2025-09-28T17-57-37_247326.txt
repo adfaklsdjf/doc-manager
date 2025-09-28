@@ -1,3 +1,22 @@
+POST /webhook HTTP/1.1
+Host: 127.0.0.1:5000
+User-Agent: curl/8.7.1
+Accept: */*
+Content-Length: 5831
+Content-Type: multipart/form-data; boundary=------------------------zG7cVYJYHN4kSrSwgsUD4B
+
+--------------------------zG7cVYJYHN4kSrSwgsUD4B
+Content-Disposition: form-data; name="field1"
+
+value1
+--------------------------zG7cVYJYHN4kSrSwgsUD4B
+Content-Disposition: form-data; name="field2"
+
+value2
+--------------------------zG7cVYJYHN4kSrSwgsUD4B
+Content-Disposition: form-data; name="file"; filename="webhook_service.py"
+Content-Type: text/plain
+
 #!/usr/bin/env python3
 """
 Simple webhook service for paperless-ngx integration.
@@ -150,3 +169,4 @@ if __name__ == '__main__':
 
     # Run on all interfaces to accept local network connections
     app.run(host='0.0.0.0', port=5000, debug=True)
+--------------------------zG7cVYJYHN4kSrSwgsUD4B--
