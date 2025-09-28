@@ -59,8 +59,12 @@ def webhook_handler():
     except Exception as e:
         request_details['body_error'] = str(e)
 
-    # Log the request
-    logger.info(f"Webhook received: {json.dumps(request_details, indent=2)}")
+    # Log the request with headers prominently displayed
+    logger.info(f"=== WEBHOOK RECEIVED ===")
+    logger.info(f"Method: {request.method} | Path: {request.path} | From: {request.remote_addr}")
+    logger.info(f"Headers: {json.dumps(dict(request.headers), indent=2)}")
+    logger.info(f"Full Request Details: {json.dumps(request_details, indent=2)}")
+    logger.info(f"========================")
 
     # Return success response
     response_data = {
