@@ -5,12 +5,20 @@ Paperless-ngx API utility for querying document statistics and metadata.
 
 import requests
 import json
+import os
+import datetime
 from collections import defaultdict
+from pathlib import Path
 
 class PaperlessAPI:
-    def __init__(self, base_url, token=None, username=None, password=None):
+    def __init__(self, base_url, token=None, username=None, password=None, save_raw_data=False):
         self.base_url = base_url.rstrip('/')
         self.session = requests.Session()
+        self.save_raw_data = save_raw_data
+        self.raw_data_dir = Path(__file__).parent / "raw_data"
+
+        if save_raw_data:
+            self.raw_data_dir.mkdir(exist_ok=True)
 
         if token:
             self.session.headers.update({'Authorization': f'Token {token}'})
@@ -26,10 +34,56 @@ class PaperlessAPI:
             else:
                 raise Exception(f"Authentication failed: {auth_response.text}")
 
+    def _save_request_response(self, method, url, params=None, data=None, response=None):
+        """Save raw request and response data for analysis."""
+        if not self.save_raw_data:
+            return
+
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S_%f')[:-3]  # Include milliseconds
+        base_name = f"{timestamp}_{method.lower()}_{url.split('/')[-1]}"
+
+        # Save request
+        request_data = {
+            'timestamp': timestamp,
+            'method': method,
+            'url': url,
+            'headers': dict(self.session.headers),
+            'params': params,
+            'data': data
+        }
+        request_file = self.raw_data_dir / f"{base_name}_request.json"
+        with open(request_file, 'w') as f:
+            json.dump(request_data, f, indent=2, default=str)
+
+        # Save response
+        if response:
+            response_data = {
+                'timestamp': timestamp,
+                'status_code': response.status_code,
+                'headers': dict(response.headers),
+                'url': response.url,
+                'content': response.text
+            }
+            response_file = self.raw_data_dir / f"{base_name}_response.json"
+            with open(response_file, 'w') as f:
+                json.dump(response_data, f, indent=2, default=str)
+
+    def _make_request(self, method, url, **kwargs):
+        """Make HTTP request with optional raw data saving."""
+        response = self.session.request(method, url, **kwargs)
+
+        if self.save_raw_data:
+            self._save_request_response(method, url,
+                                      params=kwargs.get('params'),
+                                      data=kwargs.get('data'),
+                                      response=response)
+
+        response.raise_for_status()
+        return response
+
     def get_document_types(self):
         """Get all document types from paperless."""
-        response = self.session.get(f'{self.base_url}/api/document_types/')
-        response.raise_for_status()
+        response = self._make_request('GET', f'{self.base_url}/api/document_types/')
         return response.json()
 
     def get_documents(self, page_size=100, document_type=None):
@@ -45,11 +99,10 @@ class PaperlessAPI:
 
         while next_url:
             if next_url == url:
-                response = self.session.get(next_url, params=params)
+                response = self._make_request('GET', next_url, params=params)
             else:
-                response = self.session.get(next_url)
+                response = self._make_request('GET', next_url)
 
-            response.raise_for_status()
             data = response.json()
 
             all_documents.extend(data['results'])
@@ -98,14 +151,12 @@ class PaperlessAPI:
 
     def get_correspondents(self):
         """Get all correspondents."""
-        response = self.session.get(f'{self.base_url}/api/correspondents/')
-        response.raise_for_status()
+        response = self._make_request('GET', f'{self.base_url}/api/correspondents/')
         return response.json()
 
     def get_tags(self):
         """Get all tags."""
-        response = self.session.get(f'{self.base_url}/api/tags/')
-        response.raise_for_status()
+        response = self._make_request('GET', f'{self.base_url}/api/tags/')
         return response.json()
 
 def main():
@@ -128,9 +179,10 @@ def main():
         return
 
     try:
-        # Connect to paperless
+        # Connect to paperless with raw data saving enabled
         print(f"Connecting to paperless at {PAPERLESS_URL}...")
-        api = PaperlessAPI(PAPERLESS_URL, token=TOKEN, username=USERNAME, password=PASSWORD)
+        print("Raw request/response data will be saved to raw_data/ folder")
+        api = PaperlessAPI(PAPERLESS_URL, token=TOKEN, username=USERNAME, password=PASSWORD, save_raw_data=True)
 
         # Get document type statistics
         print("\nGetting document type statistics...")
