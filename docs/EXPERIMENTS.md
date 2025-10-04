@@ -116,9 +116,9 @@ Verify we can programmatically interact with paperless-ngx for document storage 
 
 **Approach**:
 - Connect to API
+- Search and retrieve information
+- Apply relevant tags to one document that does not have the "ai-processed" tag
 - Upload test document
-- Apply tags
-- Search and retrieve
 
 ---
 

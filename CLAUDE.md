@@ -61,6 +61,11 @@ A living document management system designed to automatically process, categoriz
 - Propose alternatives with trade-offs
 - Reference existing patterns in the codebase
 
+### Defensive File Operations
+- **ALWAYS run `pwd` before file operations** to confirm working directory
+- Check file paths exist before attempting operations
+- Use absolute paths when possible to avoid confusion
+
 ## Next Immediate Tasks
 1. Analyze sample documents to understand patterns
 2. Connect to paperless-ngx API
