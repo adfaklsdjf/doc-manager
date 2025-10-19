@@ -39,6 +39,7 @@ pyvenv.cfg
 # Sensitive data
 config.ini
 .env
+.envrc
 secrets.yml
 credentials.json
 api_keys.txt
