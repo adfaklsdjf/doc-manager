@@ -42,6 +42,10 @@ A living document management system designed to automatically process, categoriz
 
 ## Working Guidelines for Claude Code
 
+### API and Command-Line Tools
+- **curl and JSON**: Don't pipe curl to `jq` - Claude Code's tooling already formats JSON automatically, and piping introduces unnecessary complexity and potential failures
+- Use simple, direct commands when possible
+
 ### When Experimenting
 - Start with standalone scripts in `experiments/`
 - Test against real files from the Documents folder
