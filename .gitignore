@@ -42,6 +42,8 @@ config.ini
 secrets.yml
 credentials.json
 api_keys.txt
+.mcp.json
+claude_desktop_config.json
 
 # Logs
 *.log
