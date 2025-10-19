@@ -1,0 +1,40 @@
+{
+  "timestamp": "2025-09-28",
+  "model": "claude-3-5-haiku-latest",
+  "pdf": "WESTFIELD_ABBYY_OCR.pdf",
+  "analysis": {
+    "analysis_confidence": 95,
+    "document_count": 1,
+    "total_pages": 2,
+    "document_importance": "high",
+    "action_required": true,
+    "key_summary": "Westfield insurance policy update notice for homeowner Brian C Weaver, detailing changes to home insurance policy effective 12/28/2024, including deductible increases, roof coverage modifications, and policy exclusions",
+    "recommended_actions": [
+      {
+        "action": "keep",
+        "pages": [
+          1,
+          2
+        ],
+        "document_type": "Insurance Policy Update Notice",
+        "suggested_filename": "Westfield_Policy_Update_2024.pdf",
+        "tags": [
+          "insurance",
+          "policy update",
+          "homeowners"
+        ],
+        "reasoning": "Important communication about policy changes requiring customer review"
+      }
+    ],
+    "duplicates_detected": [],
+    "reordering_needed": {
+      "required": false,
+      "suggested_order": [
+        1,
+        2
+      ],
+      "reasoning": "Pages are in correct sequential order"
+    }
+  },
+  "extra_observations": "Key observations:\n- This is a two-page insurance policy update notice from Westfield\n- Significant policy changes affecting roof coverage and deductibles\n- Customer should contact their agent to review and potentially modify coverage\n- Urgent communication requiring customer action before 12/28/2024\n- Recommended to keep both pages for reference\n- No duplicates or reordering needed"
+}

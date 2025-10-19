@@ -1,0 +1,22 @@
+# Ignore saved request files (can contain sensitive data and binary content)
+saved_requests/*.http
+
+# Ignore extracted files
+extracted_*.pdf
+extracted_*.jpg
+extracted_*.png
+
+# Ignore log files
+*.log
+
+# Python virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# macOS
+.DS_Store

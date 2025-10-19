@@ -1,0 +1,28 @@
+Based on the individual page analyses below, provide an overall document processing recommendation.
+
+Page analyses:
+{page_analyses}
+
+Provide a comprehensive analysis in this JSON format:
+{
+  "analysis_confidence": <number>,
+  "document_count": <number>,
+  "total_pages": {total_pages},
+  "recommended_actions": [
+    {
+      "action": "extract|remove|keep",
+      "pages": [list of page numbers],
+      "document_type": "description",
+      "suggested_filename": "filename.pdf",
+      "tags": ["tag1", "tag2"],
+      "reasoning": "explanation"
+    }
+  ],
+  "duplicates_detected": [
+    {
+      "pages": [page numbers],
+      "similarity": "exact|high|partial",
+      "reasoning": "explanation"
+    }
+  ]
+}

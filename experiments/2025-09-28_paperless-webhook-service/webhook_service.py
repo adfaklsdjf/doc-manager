@@ -1,0 +1,189 @@
+#!/usr/bin/env python3
+"""
+Simple webhook service for paperless-ngx integration.
+Logs all incoming request details for analysis and debugging.
+"""
+
+import json
+import logging
+from datetime import datetime
+from flask import Flask, request, jsonify
+import os
+from werkzeug.datastructures import FileStorage
+
+# Setup logging and directories
+log_dir = os.path.dirname(os.path.abspath(__file__))
+log_file = os.path.join(log_dir, 'webhook_requests.log')
+saved_requests_dir = os.path.join(log_dir, 'saved_requests')
+os.makedirs(saved_requests_dir, exist_ok=True)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(log_file),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
+app = Flask(__name__)
+
+def handle_webhook_request(endpoint_name):
+    """Common webhook handler for all endpoints."""
+    # Get current timestamp
+    timestamp = datetime.now().isoformat()
+
+    # Collect request details
+    request_details = {
+        'endpoint': endpoint_name,
+        'timestamp': timestamp,
+        'method': request.method,
+        'url': request.url,
+        'path': request.path,
+        'query_string': request.query_string.decode('utf-8'),
+        'headers': dict(request.headers),
+        'remote_addr': request.remote_addr,
+        'user_agent': request.headers.get('User-Agent', 'Unknown'),
+        'content_type': request.content_type,
+        'content_length': request.content_length,
+    }
+
+    # Save raw request to file for later analysis
+    # Use .http extension for HTTP requests (better than .txt for binary content)
+    clean_timestamp = timestamp.replace(':', '-').replace('.', '_')
+    request_filename = f"{endpoint_name}_{clean_timestamp}.http"
+    request_file_path = os.path.join(saved_requests_dir, request_filename)
+
+    # Get raw request body
+    raw_body = request.get_data()
+
+    # Save complete raw request
+    try:
+        with open(request_file_path, 'wb') as f:
+            # Write request line and headers
+            request_line = f"{request.method} {request.path} HTTP/1.1\r\n"
+            f.write(request_line.encode('utf-8'))
+
+            # Write headers
+            for header_name, header_value in request.headers:
+                header_line = f"{header_name}: {header_value}\r\n"
+                f.write(header_line.encode('utf-8'))
+
+            f.write(b"\r\n")  # Empty line between headers and body
+            f.write(raw_body)  # Raw body
+
+        request_details['saved_to_file'] = request_file_path
+        logger.info(f"Raw request saved to: {request_file_path}")
+    except Exception as e:
+        request_details['file_save_error'] = str(e)
+
+    # Get request body if present
+    try:
+        if request.is_json:
+            request_details['json_data'] = request.get_json()
+        elif request.content_type and request.content_type.startswith('multipart/form-data'):
+            # Handle multipart form data
+            form_data = {}
+            files_data = {}
+
+            for key, value in request.form.items():
+                form_data[key] = value
+
+            for key, file_obj in request.files.items():
+                if isinstance(file_obj, FileStorage):
+                    files_data[key] = {
+                        'filename': file_obj.filename,
+                        'content_type': file_obj.content_type,
+                        'size': len(file_obj.read()) if file_obj else 0
+                    }
+                    file_obj.seek(0)  # Reset file pointer
+
+            request_details['form_data'] = form_data
+            request_details['files_data'] = files_data
+            request_details['multipart_info'] = f"Form fields: {len(form_data)}, Files: {len(files_data)}"
+        elif request.data:
+            request_details['raw_data'] = request.data.decode('utf-8', errors='replace')
+        elif request.form:
+            request_details['form_data'] = dict(request.form)
+    except Exception as e:
+        request_details['body_error'] = str(e)
+
+    # Log the request with headers prominently displayed
+    logger.info(f"=== {endpoint_name.upper()} WEBHOOK RECEIVED ===")
+    logger.info(f"Method: {request.method} | Path: {request.path} | From: {request.remote_addr}")
+    logger.info(f"Headers: {json.dumps(dict(request.headers), indent=2)}")
+    logger.info(f"Full Request Details: {json.dumps(request_details, indent=2)}")
+    logger.info(f"========================")
+
+    # Return success response
+    response_data = {
+        'status': 'received',
+        'endpoint': endpoint_name,
+        'timestamp': timestamp,
+        'message': f'{endpoint_name} webhook processed successfully'
+    }
+
+    return jsonify(response_data), 200
+
+@app.route('/webhook', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def webhook_handler():
+    """Handle general webhook requests (backward compatibility)."""
+    return handle_webhook_request('general')
+
+@app.route('/consumption-started', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def consumption_started_handler():
+    """Handle Consumption Started trigger webhooks."""
+    return handle_webhook_request('consumption-started')
+
+@app.route('/document-added', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def document_added_handler():
+    """Handle Document Added trigger webhooks."""
+    return handle_webhook_request('document-added')
+
+@app.route('/document-updated', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def document_updated_handler():
+    """Handle Document Updated trigger webhooks."""
+    return handle_webhook_request('document-updated')
+
+@app.route('/scheduled', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+def scheduled_handler():
+    """Handle Scheduled trigger webhooks."""
+    return handle_webhook_request('scheduled')
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    """Simple health check endpoint."""
+    return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()}), 200
+
+@app.route('/', methods=['GET'])
+def root():
+    """Root endpoint with service info."""
+    return jsonify({
+        'service': 'paperless-webhook-receiver',
+        'status': 'running',
+        'endpoints': {
+            '/webhook': 'General webhook endpoint (backward compatibility)',
+            '/consumption-started': 'Paperless "Consumption Started" trigger webhooks',
+            '/document-added': 'Paperless "Document Added" trigger webhooks',
+            '/document-updated': 'Paperless "Document Updated" trigger webhooks',
+            '/scheduled': 'Paperless "Scheduled" trigger webhooks',
+            '/health': 'Health check',
+            '/': 'This info page'
+        },
+        'paperless_workflow_triggers': [
+            'Consumption Started',
+            'Document Added',
+            'Document Updated',
+            'Scheduled'
+        ],
+        'timestamp': datetime.now().isoformat()
+    }), 200
+
+if __name__ == '__main__':
+    logger.info("Starting webhook service...")
+    logger.info(f"Logging requests to: {log_file}")
+
+    # Run on all interfaces to accept local network connections
+    app.run(host='0.0.0.0', port=5000, debug=True)

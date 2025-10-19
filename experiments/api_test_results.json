@@ -1,0 +1,59 @@
+{
+  "test_metadata": {
+    "timestamp": "2025-09-28 11:06:03",
+    "pdf_file": "/Users/brianweaver/code/doc-manager/samples/09162025_RESPONSE REQUESTED BY September 16,2025.pdf",
+    "models_tested": [
+      "claude-3-haiku-20240307"
+    ]
+  },
+  "test_results": [
+    {
+      "method": "text_extraction",
+      "model": "claude-3-haiku-20240307",
+      "error": "'Usage' object has no attribute '_asdict'",
+      "processing_time": 1.3819289207458496
+    },
+    {
+      "method": "direct_pdf",
+      "model": "claude-3-haiku-20240307",
+      "error": "'Usage' object has no attribute '_asdict'",
+      "processing_time": 3.3912298679351807
+    },
+    {
+      "method": "page_by_page",
+      "model": "claude-3-haiku-20240307",
+      "error": "'Usage' object has no attribute '_asdict'",
+      "page_analyses": [
+        {
+          "page": 1,
+          "analysis": "{\n  \"page_number\": 1,\n  \"document_type\": \"form\",\n  \"is_complete_document\": false,\n  \"likely_duplicate\": false,\n  \"quality\": \"good\",\n  \"organization\": \"ABC Company\",\n  \"key_content\": \"This appears to be the first page of a multi-page form or application document from ABC Company. It contains fields for the applicant to fill out personal information such as name, address, and contact details.\"\n}"
+        },
+        {
+          "page": 2,
+          "analysis": "{\n  \"page_number\": 2,\n  \"document_type\": \"form\",\n  \"is_complete_document\": false,\n  \"likely_duplicate\": false,\n  \"quality\": \"good\",\n  \"organization\": \"ABC Company\",\n  \"key_content\": \"This appears to be a page from a multi-page form or application document. It contains fields for the applicant to provide personal information such as name, address, and contact details.\"\n}"
+        },
+        {
+          "page": 3,
+          "analysis": "{\n  \"page_number\": 3,\n  \"document_type\": \"technical specification\",\n  \"is_complete_document\": false,\n  \"likely_duplicate\": false,\n  \"quality\": \"good\",\n  \"organization\": \"ABC Corporation\",\n  \"key_content\": \"This page appears to be part of a technical specification document from ABC Corporation. It contains a list of numbered items, likely describing product features or requirements.\"\n}"
+        },
+        {
+          "page": 4,
+          "analysis": "{\n  \"page_number\": 4,\n  \"document_type\": \"technical specification\",\n  \"is_complete_document\": false,\n  \"likely_duplicate\": false,\n  \"quality\": \"good\",\n  \"organization\": \"ABC Corporation\",\n  \"key_content\": \"This page appears to be part of a technical specification document from ABC Corporation. It contains a list of numbered items, likely describing product features or requirements.\"\n}"
+        },
+        {
+          "page": 5,
+          "analysis": "{\n  \"page_number\": 5,\n  \"document_type\": \"technical specification\",\n  \"is_complete_document\": false,\n  \"likely_duplicate\": false,\n  \"quality\": \"good\",\n  \"organization\": \"ABC Corporation\",\n  \"key_content\": \"This page appears to be part of a technical specification document from ABC Corporation. It contains a numbered list of requirements or features, suggesting it is part of a larger multi-page document.\"\n}"
+        },
+        {
+          "page": 6,
+          "analysis": "{\n  \"page_number\": 6,\n  \"document_type\": \"technical specification\",\n  \"is_complete_document\": false,\n  \"likely_duplicate\": false,\n  \"quality\": \"good\",\n  \"organization\": \"ABC Corporation\",\n  \"key_content\": \"This page appears to be part of a technical specification document from ABC Corporation. It contains a list of numbered items, likely describing product features or requirements.\"\n}"
+        },
+        {
+          "page": 7,
+          "analysis": "{\n  \"page_number\": 7,\n  \"document_type\": \"technical specification\",\n  \"is_complete_document\": false,\n  \"likely_duplicate\": false,\n  \"quality\": \"good\",\n  \"organization\": \"ABC Corporation\",\n  \"key_content\": \"This page appears to be part of a technical specification document from ABC Corporation. It contains a numbered list of requirements or features, suggesting it is part of a larger multi-page document.\"\n}"
+        }
+      ],
+      "processing_time": 10.317192077636719
+    }
+  ]
+}
